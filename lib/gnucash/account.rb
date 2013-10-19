@@ -1,9 +1,11 @@
 module Gnucash
   class Account
+    attr_reader :node
     attr_reader :name, :guid, :type
 
     def initialize(book, node)
       @book = book
+      @node = node
       @name = node.xpath('act:name').text
       @guid = node.xpath('act:id').text
       @type = node.xpath('act:type').text.downcase
