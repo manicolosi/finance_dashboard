@@ -1,0 +1,18 @@
+* Use a YAML configuration file
+  - Dropbox Auth Token
+  - Gnucash accounts to use
+* Pull lib/gnucash into a gem
+* Show accounts based on a slot value assigned within Gnucash
+  - Color could be used for this
+* Monthly Profits
+  - Total income for month
+  - Total expenses for month
+  - Total profits (income - expenses)
+* Budget information for expense list
+  - Stored in Gnucash note (I don't like the builtin Gnuash budgets)
+* Expense vs budget progress bar
+  - Like Mint's (https://lh3.ggpht.com/30zM8zdzWGs9oBAUds9FoGFRm4SUUBgSuirAazZaE0o7svIICkwqYh6-qCj5FkHjyGM=h900)
+* Create dashboards for other things and transition between them
+  - Calendar
+  - News and Weather
+  - Fitbit stats
