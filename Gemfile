@@ -6,3 +6,5 @@ gem 'dashing'
 
 gem 'nokogiri'
 gem 'dropbox-sdk'
+
+gem 'debugger'
