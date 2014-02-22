@@ -31,8 +31,8 @@ module Gnucash
       parents_names + [name]
     end
 
-    def pretty_full_name
-      full_name.join('::')
+    def pretty_full_name(cut_off = 0)
+      full_name[cut_off..-1].join('::')
     end
 
     def parent_id
@@ -46,6 +46,12 @@ module Gnucash
 
     def children
       @book.accounts_by_parent_id id
+    end
+
+    def descendants
+      children.map do |acc|
+        [acc] + acc.descendants
+      end.flatten
     end
 
     def type
