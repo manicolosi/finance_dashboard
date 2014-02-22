@@ -18,7 +18,7 @@ SCHEDULER.every '5m', :first_in => 0 do
 
   items = book.account_by_name('Expenses').descendants.map do |expense|
     expense_item(expense)
-  end.sort_by { |i| i[:value][1..-1].to_i }.reverse
+  end.compact.sort_by { |i| i[:value][1..-1].to_i }.reverse
 
   send_event('monthly-spending',
              moreinfo: "Spending in #{current_month_name}",
@@ -28,7 +28,7 @@ end
 def expense_item(account)
   value = account.transactions_since(beginning_of_month).balance || 0
 
-  { label: account.pretty_full_name(2), value: "$#{value / 100}" }
+  { label: account.pretty_full_name(2), value: "$#{value / 100}" } unless value == 0
 end
 
 def self.current_month_name
