@@ -6,19 +6,23 @@ SCHEDULER.every '5m', :first_in => 0 do
   data = DropboxDownloader.get_file("/Finance/GnuCash/Gnucash2014.gnucash")
   book = Gnucash::Book.new(data)
 
+  #expenses = book.account_by_name 'Expenses'
+  #groceries = book.account_by_name 'Groceries'
+  #debugger
+
   AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
   AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
 
+  items = book.account_by_name('Expenses').children.map do |expense|
+    expense_item(expense)
+  end.sort_by { |i| i[:value][1..-1].to_i }.reverse
+
   send_event('monthly-spending',
              moreinfo: "Spending in #{current_month_name}",
-             items: [
-               expense_item(book, "Groceries"),
-               expense_item(book, "Dining"),
-             ].sort_by { |i| i[:value][1..-1].to_i }.reverse)
+             items: items)
 end
 
-def expense_item(book, account_name)
-  account = book.account_by_name(account_name)
+def expense_item(account)
   value = account.transactions_since(beginning_of_month).balance || 0
 
   { label: account.name, value: "$#{value / 100}" }

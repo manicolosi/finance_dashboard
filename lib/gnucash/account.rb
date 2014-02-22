@@ -21,6 +21,10 @@ module Gnucash
       @node.xpath('act:id').text
     end
 
+    def children
+      @book.accounts_by_parent_id id
+    end
+
     def type
       @node.xpath('act:type').text
     end
