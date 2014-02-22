@@ -12,6 +12,7 @@ SCHEDULER.every '5m', :first_in => 0 do
 
   AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
   AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
+  AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
 
   items = book.account_by_name('Expenses').children.map do |expense|
     expense_item(expense)
