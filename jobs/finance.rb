@@ -25,7 +25,7 @@ end
 def expense_item(account)
   value = account.transactions_since(beginning_of_month).balance || 0
 
-  { label: account.name, value: "$#{value / 100}" }
+  { label: account.pretty_full_name, value: "$#{value / 100}" }
 end
 
 def self.current_month_name

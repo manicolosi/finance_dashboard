@@ -17,6 +17,29 @@ module Gnucash
       @node.xpath('act:name').text
     end
 
+    def parent_account
+      @book.account_by_id(parent_id)
+    end
+
+    def full_name
+      parents_names = if parent_id
+                        parent_account.full_name
+                      else
+                        []
+                      end
+
+      parents_names + [name]
+    end
+
+    def pretty_full_name
+      full_name.join('::')
+    end
+
+    def parent_id
+      id = @node.xpath('act:parent').text
+      id unless id.empty?
+    end
+
     def id
       @node.xpath('act:id').text
     end
