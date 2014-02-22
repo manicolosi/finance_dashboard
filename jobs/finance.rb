@@ -3,7 +3,7 @@ require_relative '../lib/dropbox_downloader'
 require 'debugger'
 
 SCHEDULER.every '5m', :first_in => 0 do
-  puts "Updating..."
+  print "Updating... "
 
   data = DropboxDownloader.get_file("/Finance/GnuCash/Gnucash2014.gnucash")
   book = Gnucash::Book.new(data)
@@ -16,13 +16,23 @@ SCHEDULER.every '5m', :first_in => 0 do
   AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
   AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
 
-  items = book.account_by_name('Expenses').descendants.map do |expense|
-    expense_item(expense)
-  end.compact.sort_by { |i| i[:value][1..-1].to_i }.reverse
+  expense_accounts = book.account_by_name('Expenses').descendants
+
+  reject_parents = %w[Taxes Interest].map do |name|
+    expense_accounts.find { |acc| acc.name == name }.id
+  end
+
+  items = expense_accounts
+            .reject { |acc| reject_parents.include? acc.parent_id }
+            .map { |acc| expense_item(acc) }
+            .compact
+            .sort_by { |i| i[:value][1..-1].to_i }.reverse
 
   send_event('monthly-spending',
              moreinfo: "Spending in #{current_month_name}",
              items: items)
+
+  puts "Done"
 end
 
 def expense_item(account)
