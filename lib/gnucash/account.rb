@@ -17,13 +17,13 @@ module Gnucash
       @node.xpath('act:name').text
     end
 
-    def parent_account
+    def parent
       @book.account_by_id(parent_id)
     end
 
     def full_name
       parents_names = if parent_id
-                        parent_account.full_name
+                        parent.full_name
                       else
                         []
                       end
