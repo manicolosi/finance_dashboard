@@ -42,6 +42,11 @@ module Gnucash
       @id ||= @node.xpath('act:id').text
     end
 
+    def description
+      @description ||= @node.xpath('act:description').text
+      @description unless @description.empty?
+    end
+
     def children
       @children ||= @book.accounts_by_parent_id id
     end

@@ -46,9 +46,15 @@ SCHEDULER.every '5m', :first_in => 0 do
 end
 
 def expense_item(account)
-  value = account.transactions_since(beginning_of_month).balance || 0
+  balance = account.transactions_since(beginning_of_month).balance
+  value = "$%i" % (balance / 100)
 
-  { label: account.pretty_full_name(2), value: "$#{value / 100}" } unless value == 0
+  name = account.pretty_full_name(2)
+  desc = account.description
+  label = name
+  label += " (#{desc})" if desc
+
+  { label: label, value: value } unless balance == 0
 end
 
 def self.current_month_name

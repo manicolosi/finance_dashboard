@@ -20,7 +20,7 @@ module Gnucash
     end
 
     def balance
-      map(&:value).reduce(&:+)
+      map(&:value).reduce(&:+) || 0
     end
   end
 end
