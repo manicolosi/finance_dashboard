@@ -29,9 +29,10 @@ SCHEDULER.every '5m', :first_in => 0 do
 
       items = expense_accounts
                 .reject { |acc| reject_parents.include? acc.parent_id }
+                .sort_by(&:full_name)
                 .map { |acc| expense_item(acc) }
                 .compact
-                .sort_by { |i| i[:value][1..-1].to_i }.reverse
+                #.sort_by { |i| i[:value][1..-1].to_i }.reverse
 
       send_event('monthly-spending',
                  moreinfo: "Spending in #{current_month_name}",
