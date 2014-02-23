@@ -17,22 +17,19 @@ module Gnucash
     end
 
     def accounts
-      book.xpath('gnc:account')
+      @accounts ||= book.xpath('gnc:account').map { |node| Account.new(self, node) }
     end
 
     def account_by_name(name)
-      account_node = accounts.find { |a| a.xpath('act:name').text == name }
-      Account.new(self, account_node)
+      accounts.find { |a| a.name == name }
     end
 
     def account_by_id(id)
-      account_node = accounts.find { |a| a.xpath('act:id').text == id }
-      Account.new(self, account_node)
+      accounts.find { |a| a.id == id }
     end
 
     def accounts_by_parent_id(id)
-      account_nodes = accounts.select { |a| a.xpath('act:parent').text == id }
-      account_nodes.map { |node| Account.new(self, node) }
+      accounts.select { |a| a.parent_id == id }
     end
 
     def transactions
