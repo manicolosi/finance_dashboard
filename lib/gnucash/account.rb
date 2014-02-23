@@ -14,19 +14,19 @@ module Gnucash
     end
 
     def name
-      @node.xpath('act:name').text
+      @name ||= @node.xpath('act:name').text
     end
 
     def parent
-      @book.account_by_id(parent_id) if parent_id
+      @parent ||= @book.account_by_id(parent_id) if parent_id
     end
 
     def ancestors
-      [parent] + parent.ancestors.to_a if parent
+      @ancestors ||= [parent] + parent.ancestors.to_a if parent
     end
 
     def full_name
-      ([self] + ancestors).map(&:name).reverse
+      @full_name ||= ([self] + ancestors).map(&:name).reverse
     end
 
     def pretty_full_name(cut_off = 0)
@@ -34,26 +34,26 @@ module Gnucash
     end
 
     def parent_id
-      id = @node.xpath('act:parent').text
-      id unless id.empty?
+      @parent_id ||= @node.xpath('act:parent').text
+      @parent_id unless @parent_id.empty?
     end
 
     def id
-      @node.xpath('act:id').text
+      @id ||= @node.xpath('act:id').text
     end
 
     def children
-      @book.accounts_by_parent_id id
+      @children ||= @book.accounts_by_parent_id id
     end
 
     def descendants
-      children.map do |acc|
+      @descendants ||= children.map do |acc|
         [acc] + acc.descendants
       end.flatten
     end
 
     def type
-      @node.xpath('act:type').text
+      @type ||= @node.xpath('act:type').text
     end
 
     def transaction_nodes
