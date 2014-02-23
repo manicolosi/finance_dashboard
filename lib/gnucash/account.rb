@@ -30,7 +30,7 @@ module Gnucash
     end
 
     def pretty_full_name(cut_off = 0)
-      full_name[cut_off..-1].join('::')
+      full_name[cut_off..-1].join(' - ')
     end
 
     def parent_id
