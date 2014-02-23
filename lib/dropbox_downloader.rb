@@ -1,11 +1,10 @@
 require 'dropbox_sdk'
-require 'stringio'
 
 module DropboxDownloader
   ACCESS_TOKEN = ENV['DROPBOX_TOKEN']
 
-  def self.get_file(name)
-    StringIO.new client.get_file(name)
+  def self.file_and_metadata(name)
+    client.get_file_and_metadata(name)
   end
 
   def self.client

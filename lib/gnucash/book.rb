@@ -1,5 +1,6 @@
 require 'zlib'
 require 'nokogiri'
+require 'stringio'
 
 require_relative 'account'
 
@@ -7,8 +8,8 @@ module Gnucash
   class Book
     attr_reader :xml
 
-    def initialize(reader)
-      reader = Zlib::GzipReader.new(reader)
+    def initialize(data)
+      reader = Zlib::GzipReader.new(StringIO.new(data))
       @xml = Nokogiri.XML(reader.read)
     end
 

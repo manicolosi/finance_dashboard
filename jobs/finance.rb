@@ -3,36 +3,40 @@ require_relative '../lib/dropbox_downloader'
 require 'debugger'
 require 'benchmark'
 
+GNUCASH_FILE = "/Finance/GnuCash/Gnucash2014.gnucash"
+
 SCHEDULER.every '5m', :first_in => 0 do
   print "Updating... "
 
-  data = DropboxDownloader.get_file("/Finance/GnuCash/Gnucash2014.gnucash")
-  book = Gnucash::Book.new(data)
-
-  #expenses = book.account_by_name 'Expenses'
-  #groceries = book.account_by_name 'Groceries'
-  #debugger
+  contents, metadata = DropboxDownloader.file_and_metadata(GNUCASH_FILE)
 
   time = Benchmark.realtime do
-    AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
-    AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
-    AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
+    rev = metadata['rev']
 
-    expense_accounts = book.account_by_name('Expenses').descendants
+    if rev != @last_rev
+      @last_rev = rev
+      book = Gnucash::Book.new(contents)
 
-    reject_parents = %w[Taxes Interest].map do |name|
-      expense_accounts.find { |acc| acc.name == name }.id
+      AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
+      AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
+      AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
+
+      expense_accounts = book.account_by_name('Expenses').descendants
+
+      reject_parents = %w[Taxes Interest].map do |name|
+        expense_accounts.find { |acc| acc.name == name }.id
+      end
+
+      items = expense_accounts
+                .reject { |acc| reject_parents.include? acc.parent_id }
+                .map { |acc| expense_item(acc) }
+                .compact
+                .sort_by { |i| i[:value][1..-1].to_i }.reverse
+
+      send_event('monthly-spending',
+                 moreinfo: "Spending in #{current_month_name}",
+                 items: items)
     end
-
-    items = expense_accounts
-              .reject { |acc| reject_parents.include? acc.parent_id }
-              .map { |acc| expense_item(acc) }
-              .compact
-              .sort_by { |i| i[:value][1..-1].to_i }.reverse
-
-    send_event('monthly-spending',
-               moreinfo: "Spending in #{current_month_name}",
-               items: items)
   end
 
   puts "%.3fs" % time
