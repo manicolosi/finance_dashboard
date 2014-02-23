@@ -18,17 +18,15 @@ module Gnucash
     end
 
     def parent
-      @book.account_by_id(parent_id)
+      @book.account_by_id(parent_id) if parent_id
+    end
+
+    def ancestors
+      [parent] + parent.ancestors.to_a if parent
     end
 
     def full_name
-      parents_names = if parent_id
-                        parent.full_name
-                      else
-                        []
-                      end
-
-      parents_names + [name]
+      ([self] + ancestors).map(&:name).reverse
     end
 
     def pretty_full_name(cut_off = 0)
