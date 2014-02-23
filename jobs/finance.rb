@@ -1,6 +1,7 @@
 require_relative '../lib/gnucash'
 require_relative '../lib/dropbox_downloader'
 require 'debugger'
+require 'benchmark'
 
 SCHEDULER.every '5m', :first_in => 0 do
   print "Updating... "
@@ -12,27 +13,29 @@ SCHEDULER.every '5m', :first_in => 0 do
   #groceries = book.account_by_name 'Groceries'
   #debugger
 
-  AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
-  AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
-  AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
+  time = Benchmark.realtime do
+    AssetBalanceUpdater.call("checking", book.account_by_name("Checking"))
+    AssetBalanceUpdater.call("savings", book.account_by_name("Savings"))
+    AssetBalanceUpdater.call("credit-card", book.account_by_name("Capital One Platinum"))
 
-  expense_accounts = book.account_by_name('Expenses').descendants
+    expense_accounts = book.account_by_name('Expenses').descendants
 
-  reject_parents = %w[Taxes Interest].map do |name|
-    expense_accounts.find { |acc| acc.name == name }.id
+    reject_parents = %w[Taxes Interest].map do |name|
+      expense_accounts.find { |acc| acc.name == name }.id
+    end
+
+    items = expense_accounts
+              .reject { |acc| reject_parents.include? acc.parent_id }
+              .map { |acc| expense_item(acc) }
+              .compact
+              .sort_by { |i| i[:value][1..-1].to_i }.reverse
+
+    send_event('monthly-spending',
+               moreinfo: "Spending in #{current_month_name}",
+               items: items)
   end
 
-  items = expense_accounts
-            .reject { |acc| reject_parents.include? acc.parent_id }
-            .map { |acc| expense_item(acc) }
-            .compact
-            .sort_by { |i| i[:value][1..-1].to_i }.reverse
-
-  send_event('monthly-spending',
-             moreinfo: "Spending in #{current_month_name}",
-             items: items)
-
-  puts "Done"
+  puts "%.3fs" % time
 end
 
 def expense_item(account)
