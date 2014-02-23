@@ -35,7 +35,7 @@ SCHEDULER.every '5m', :first_in => 0 do
                 #.sort_by { |i| i[:value][1..-1].to_i }.reverse
 
       send_event('monthly-spending',
-                 moreinfo: "Spending in #{current_month_name}",
+                 title: "Spending in #{current_month_name}",
                  items: items)
     end
   end
