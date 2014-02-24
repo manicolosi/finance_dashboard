@@ -46,15 +46,16 @@ SCHEDULER.every '5m', :first_in => 0 do
 end
 
 def expense_item(account)
-  balance = account.transactions_since(beginning_of_month).balance
-  value = "$%i" % (balance / 100)
+  label = account.pretty_full_name(2)
+  value = account.transactions_since(beginning_of_month).balance
+  match = /^Budget: \$(\d+)$/.match(account.description)
+  budget = match && match[1]
 
-  name = account.pretty_full_name(2)
-  desc = account.description
-  label = name
-  label += " (#{desc})" if desc
-
-  { label: label, value: value } unless balance == 0
+  if value != 0
+    data = { label: label, value: value / 100, budget: budget }
+    data.merge!(budget: budget) if budget
+    data
+  end
 end
 
 def self.current_month_name

@@ -2,8 +2,11 @@
 
 <ul class="list-nostyle">
   <li data-foreach-item="items">
-    <span class="label" data-bind="item.label"></span>
-    <span class="value" data-bind="item.value"></span>
+    <div class="wrapper">
+      <span class="label" data-bind="item.label"></span>
+      <span class="budget" data-showif="item.budget" data-bind="item.budget | prepend '$'"></span>
+      <span class="value" data-bind="item.value | prepend '$'"></span>
+    </div>
   </li>
 </ul>
 
