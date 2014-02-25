@@ -62,13 +62,16 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
   .progress-bar {
     width: 40%;
     right: 10%;
-    background: #d00;
+    background: #555;
     box-sizing: border-box;
 
     .bar {
       width: 75%;
       display: block;
-      background-color: red;
     }
+
+    .over { background-color: red; }
+    .close { background-color: orange; }
+    .under { background-color: green; }
   }
 }
