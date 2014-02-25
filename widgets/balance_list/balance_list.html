@@ -3,8 +3,12 @@
 <ul class="list-nostyle">
   <li data-foreach-item="items">
     <span class="label" data-bind="item.label"></span>
+    <span class="progress-bar">
+      <span class="bar">
+        <span class="value" data-bind="item.value | prepend '$'"></span>
+      </span>
+    </span>
     <span class="budget" data-showif="item.budget" data-bind="item.budget | prepend '$'"></span>
-    <span class="value" data-bind="item.value | prepend '$'"></span>
   </li>
 </ul>
 

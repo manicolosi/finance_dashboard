@@ -7,6 +7,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    columnize (0.3.6)
     daemons (1.1.9)
     dashing (1.3.1)
       coffee-script (>= 1.6.2)
@@ -18,6 +19,12 @@ GEM
       sprockets
       thin
       thor
+    debugger (1.6.5)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.3.1)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.3.1)
     dropbox-sdk (1.6.2)
       json
     eventmachine (1.0.3)
@@ -73,6 +80,7 @@ PLATFORMS
 
 DEPENDENCIES
   dashing
+  debugger
   dropbox-sdk
   execjs
   nokogiri

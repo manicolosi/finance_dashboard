@@ -49,7 +49,7 @@ def expense_item(account)
   label = account.pretty_full_name(2)
   value = account.transactions_since(beginning_of_month).balance
   match = /^Budget: \$(\d+)$/.match(account.description)
-  budget = match && match[1]
+  budget = match && match[1].to_i
 
   if value != 0
     data = { label: label, value: value / 100, budget: budget }
