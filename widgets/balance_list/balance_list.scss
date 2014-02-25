@@ -66,8 +66,9 @@ $moreinfo-color:    rgba(255, 255, 255, 0.7);
     box-sizing: border-box;
 
     .bar {
-      width: 75%;
+      width: 0;
       display: block;
+      max-width: 100%;
     }
 
     .over { background-color: red; }

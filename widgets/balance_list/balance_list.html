@@ -4,7 +4,12 @@
   <li data-foreach-item="items">
     <span class="label" data-bind="item.label"></span>
     <span class="progress-bar">
-      <span class="bar">
+      <span class="bar over"
+            data-bind-style="item.percentage | prepend 'width:' | append '%'"
+            data-addclass-over="item.is_over"
+            data-addclass-close="item.is_close"
+            data-addclass-under="item.is_under"
+            >
         <span class="value" data-bind="item.value | prepend '$'"></span>
       </span>
     </span>

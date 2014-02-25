@@ -51,9 +51,23 @@ def expense_item(account)
   match = /^Budget: \$(\d+)$/.match(account.description)
   budget = match && match[1].to_i
 
+  percentage = value / budget if budget
+
   if value != 0
-    data = { label: label, value: value / 100, budget: budget }
-    data.merge!(budget: budget) if budget
+    data = {
+      label: label,
+      value: value / 100,
+      budget: budget,
+    }
+
+    if budget
+      data.merge!( 
+        percentage: percentage,
+        is_over: percentage > 100,
+        is_close: percentage > 90 && percentage <= 100,
+        is_under: percentage <= 90
+      )
+    end
     data
   end
 end
