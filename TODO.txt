@@ -13,3 +13,6 @@
   - Calendar
   - News and Weather
   - Fitbit stats
+* Better job aggregating spending
+  - Instead of looking for transactions in Expense accounts look for
+    transactions that decreased asset accounts (exclude transfers)
