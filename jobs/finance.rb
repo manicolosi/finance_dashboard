@@ -2,6 +2,7 @@ require_relative '../lib/gnucash'
 require_relative '../lib/dropbox_downloader'
 require 'debugger'
 require 'benchmark'
+require 'dashing'
 
 GNUCASH_FILE = "/Finance/GnuCash/Gnucash2014.gnucash"
 
