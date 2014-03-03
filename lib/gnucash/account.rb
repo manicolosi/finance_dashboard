@@ -62,7 +62,7 @@ module Gnucash
     end
 
     def transaction_nodes
-      @book.transactions.select do |transaction|
+      @book.transactions_nodes.select do |transaction|
         transaction_splits_account_ids(transaction).any? { |acc_id| acc_id == id }
       end
     end

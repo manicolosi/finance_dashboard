@@ -33,7 +33,7 @@ module Gnucash
       accounts.select { |a| a.parent_id == id }
     end
 
-    def transactions
+    def transactions_nodes
       book.xpath('gnc:transaction')
     end
   end
