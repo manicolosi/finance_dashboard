@@ -24,12 +24,7 @@ SCHEDULER.every '5m', :first_in => 0 do
 
       expense_accounts = book.account_by_name('Expenses').descendants
 
-      reject_parents = %w[Taxes Interest].map do |name|
-        expense_accounts.find { |acc| acc.name == name }.id
-      end
-
       items = expense_accounts
-                .reject { |acc| reject_parents.include? acc.parent_id }
                 .map { |acc| expense_item(acc) }
                 .compact
                 .sort_by { |exp| exp[:value] }
